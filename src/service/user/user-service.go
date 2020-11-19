@@ -35,7 +35,7 @@ func Delete(content userModel.DeleteContent) (int, apiModel.ResponseDto) {
 
 	user := userRepository.Get(content.Account)
 	if user == nil {
-		return http.StatusConflict, apiModel.ResponseDto{Code: 2, Message: "Reject Create", Result: userModel.DeleteResult{IsOK: false}}
+		return http.StatusConflict, apiModel.ResponseDto{Code: 2, Message: "Reject Delete", Result: userModel.DeleteResult{IsOK: false}}
 	}
 
 	result := userRepository.Delete(content.Account)
@@ -55,6 +55,10 @@ func ModifyPassword(content userModel.ModifyPasswordContent) (int, apiModel.Resp
 	user := userRepository.Get(content.Account)
 	if user == nil {
 		return http.StatusConflict, apiModel.ResponseDto{Code: 2, Message: "Reject Modify Password", Result: userModel.ModifyPasswordResult{IsOK: false}}
+	}
+
+	if user.Password == content.Password {
+		return http.StatusOK, apiModel.ResponseDto{Code: 0, Message: "", Result: userModel.ModifyPasswordResult{IsOK: true}}
 	}
 
 	result := userRepository.ModifyPassword(content.Account, content.Password)
